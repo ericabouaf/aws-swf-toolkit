@@ -85,3 +85,10 @@ For more detailed installation instructions, check the [Installation Wiki Page](
 ![AWS-SWF Overview](/neyric/aws-swf/raw/master/diagram.png "AWS-SWF Overview")
 
 
+
+
+## License
+
+[MIT License](https://raw.github.com/neyric/aws-swf/master/LICENSE.txt)
+
+
