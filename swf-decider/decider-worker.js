@@ -21,11 +21,17 @@ function workflowFailed(reason, details) {
     });
 }
 
+
+var workflowsDirectory = path.join(process.cwd(),'workflows');
+if(!fs.existsSync(workflowsDirectory)) {
+    workflowsDirectory = process.cwd();
+}
+
 var workflowName = decisionTaskConfig.workflowType.name;
 
 try {
 
-    fs.readFile(path.join(process.cwd(), workflowName, workflowName + '.js'), function (err, deciderCode) {
+    fs.readFile(path.join(workflowsDirectory, workflowName, workflowName + '.js'), function (err, deciderCode) {
 
         if(err) {
             console.log(err);

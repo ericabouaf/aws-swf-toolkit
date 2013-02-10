@@ -20,8 +20,6 @@ EXCEPT: does not have to send a response right away ! ( very long tasks ! )
 * activities run method
 * SOON: something for input/output variables schema ? (json-schema ?)
 
-(TODO: fetch_config_file unecessary complexity)
-
 
 ## swf-deciders: Running the Workflow logic
 
@@ -30,9 +28,6 @@ IMPORTANT: fundamental difference with script: the decider is called many times 
 
 * package.json
 * JS description of the workflow
-
-
-(TODO: remove the fetch_code_file unecessary complexity)
         
 
 ## CLI tools to play with swf from the command line
@@ -58,14 +53,6 @@ IMPORTANT: fundamental difference with script: the decider is called many times 
 * Activity-Type-Configuration-Details when registering a new ActivityType ( using activityTypeOptions.json, if exists )
 
 * options for default workflow parameters (workflowOptions.json, if exists) => no need to set them in start_childworkflow
-
-
-* swf-toolkit : start n swf-decider processes and n swf-activity processes from the current folder (default directories: activities/ & workflows/)
-
-* swf-activity-test: creates a workflow which can execute any activity given a file
-
-
-
 
 ## Documentation
 
