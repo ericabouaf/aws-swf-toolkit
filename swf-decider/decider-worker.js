@@ -5,25 +5,14 @@
  */
 var vm = require('vm'),
     fs = require('fs'),
-    swf = require('../index');
+    path = require('path'),
+    swf = require('aws-swf');
 
 // The task is given to this process as a command line argument in JSON format :
-var decisionTaskConfig = JSON.parse(process.argv[2]),
-    accessKeyId = process.argv[3],
-    secretAccessKey = process.argv[4];
-
-// You can customize the fetch_code method (might be in DB...)
-var fetch_code_file = process.argv[5],
-    fetch_code = require(fetch_code_file).fetch_code;
-
-// Create a new swf client
-var swfClient = swf.createClient({
-    accessKeyId: accessKeyId,
-    secretAccessKey: secretAccessKey
-});
+var decisionTaskConfig = JSON.parse(process.argv[2]);
 
 // Re-Create the Decision task
-var dt = new swf.DecisionTask(swfClient, decisionTaskConfig);
+var dt = new swf.DecisionTask(decisionTaskConfig);
 
 function workflowFailed(reason, details) {
     dt.fail_workflow_execution(reason, details, function (err) {
@@ -36,8 +25,7 @@ var workflowName = decisionTaskConfig.workflowType.name;
 
 try {
 
-    // Call the async method to retreive the decider code content
-    fetch_code(workflowName, function (err, deciderCode) {
+    fs.readFile(path.join(process.cwd(), workflowName, workflowName + '.js'), function (err, deciderCode) {
 
         if(err) {
             console.log(err);
@@ -50,6 +38,7 @@ try {
             FAILED: 2,
             TIMEDOUT: 4,
 
+            // TODO
             // read content of a file from the decider code
             file: function(path) {
                 return fs.readFileSync(path).toString();
@@ -87,6 +76,7 @@ try {
                 dt.fail("Don't know what to do...");
             }
         }
+        
     });
 
 } catch (ex) {

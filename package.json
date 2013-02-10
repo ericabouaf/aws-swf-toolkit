@@ -14,11 +14,9 @@
         "swf",
         "workflow"
     ],
-    "main" : "index.js",
-    "directories" : { "lib" : "./lib" },
     "repository": {
         "type":"git",
-        "url":"http://github.com/neyric/aws-swf.git"
+        "url":"http://github.com/neyric/aws-swf-toolkit.git"
     },
     "bin": {
         "swf-activity": "./swf-activity/swf-activity.js",
@@ -26,15 +24,15 @@
         "swf-register": "./swf-register/swf-register.js",
         "swf-set-credentials": "./swf-set-credentials/swf-set-credentials.js",
         "swf-start": "./swf-start/swf-start.js",
-        "swf-decider-graph": "./swf-graph/swf-decider-graph.js"
+        "swf-graph": "./swf-graph/swf-graph.js",
+        "swf-toolkit": "./swf-toolkit/swf-toolkit.js"
     },
     "dependencies": {
-            "aws-sdk": "0.9.1-pre.3",
-            "aws-swf": "3.0.0",
-            "optimist": "0.3.4",
-            "async": "0.1.22",
-            "colors": "0.6.0-1",
-            "graphviz": "0.0.8"
+        "aws-swf": "3.0.0",
+        "optimist": "0.3.4",
+        "async": "0.1.22",
+        "colors": "0.6.0-1",
+        "graphviz": "0.0.8"
     },
     "licenses" : [
         {

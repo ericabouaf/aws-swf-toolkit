@@ -1,36 +1,25 @@
 #!/usr/bin/env node
 
-// Start a DeciderPoller which spawns the given poller worker file
+// Start a DeciderPoller which spawns decider-worker.js for each new decisionTask
 
 var colors = require('colors'),
     optimist = require('optimist'),
     spawn = require('child_process').spawn,
     os = require('os'),
     path = require('path'),
-    fs = require('fs');
-
-var config, configFilePath = path.join(__dirname, '..', 'config.js');
-try {
-    config = require(configFilePath);
-} catch (ex) {
-    config = {};
-}
+    fs = require('fs'),
+    swf = require('aws-swf');
 
 var argv = optimist
     .usage('Start a decider-poller for AWS SWF.\nUsage: swf-decider decider-file.js')
-    .options('f', {
-        'alias' : 'file',
-        'default' : path.join(__dirname, 'decider-worker.js'),
-        'describe': 'file to execute in a node spawed process'
-    })
     .options('d', {
         'alias' : 'domain',
-        'default' : config.domain || 'aws-swf-test-domain',
+        'default' : 'aws-swf-test-domain',
         'describe': 'SWF domain'
     })
     .options('t', {
         'alias' : 'tasklist',
-        'default' : config.tasklist || 'aws-swf-tasklist',
+        'default' : 'aws-swf-tasklist',
         'describe': 'tasklist'
     })
     .options('i', {
@@ -42,19 +31,6 @@ var argv = optimist
         'alias' : 'help',
         'describe': 'show this help'
     })
-    .options('c', {
-        'alias' : 'fetchcodefile',
-        'default' : path.join(__dirname, 'fetch_code_file.js'),
-        'describe': 'js file which exports the fetch_code method'
-    })
-    .options('accessKeyId', {
-        'default': config.accessKeyId,
-        'describe': 'AWS accessKeyId'
-    })
-    .options('secretAccessKey', {
-        'default': config.secretAccessKey,
-        'describe': 'AWS secretAccessKey'
-    })
     .argv;
 
 if (argv.help) {
@@ -62,33 +38,18 @@ if (argv.help) {
     process.exit(0);
 }
 
-// Check presence of accessKeyId and secretAccessKey
-if (!argv.accessKeyId || !argv.secretAccessKey) {
-    console.error(("accessKeyId or secretAccessKey not configured !\nSet the --accessKeyId and --secretAccessKey parameters or call 'swf-set-credentials'.").red);
-    process.exit(1);
-}
-
-// check if file exists !
-if (!(process.version.substr(1, 3) === "0.6" ? path : fs).existsSync(argv.f)) {
-    console.error(("File does not exist : " + argv.f).red);
-    process.exit(1);
-}
-
-var swf = require('../index');
-var swfClient = swf.createClient({
-    accessKeyId: argv.accessKeyId,
-    secretAccessKey: argv.secretAccessKey
-});
-
 
 // Start a decider poller
-var myDecider = new swf.Decider(swfClient, {
+var myDecider = new swf.Decider({
     domain: argv.d,
     taskList: {"name": argv.t},
     identity: argv.i,
     maximumPageSize: 500,
     reverseOrder: false // IMPORTANT: must replay events in the right order, ie. from the start
-}, function (decisionTask, cb) {
+});
+
+
+myDecider.on('decisionTask', function (decisionTask) {
 
     // If we receive an event "ScheduleActivityTaskFailed", we should fail the workflow and display why...
     var failedEvent = decisionTask.has_schedule_activity_task_failed();
@@ -99,12 +60,17 @@ var myDecider = new swf.Decider(swfClient, {
             if (err) { console.log(err, results); return; }
             console.error("Workflow marked as failed !".red);
         });
-        cb(true); // to continue polling
+        
+        // to continue polling
+        myDecider.poll();
+
         return;
     }
 
+    console.log("new decisionTask received ! spawning...");
+
     // Spawn child process
-    var p = spawn('node', [ argv.f, JSON.stringify(decisionTask.config), argv.accessKeyId, argv.secretAccessKey, argv.c ]);
+    var p = spawn('node', [ path.join(__dirname, 'decider-worker.js'), JSON.stringify(decisionTask.config)/*, argv.accessKeyId, argv.secretAccessKey, argv.c */]);
 
     p.stdout.on('data', function (data) {
         console.log(data.toString().blue);
@@ -116,10 +82,19 @@ var myDecider = new swf.Decider(swfClient, {
 
     p.on('exit', function (code) {
         console.log(('child process exited with code ' + code));
-        cb(true); // to continue polling
+        
+        myDecider.poll();
     });
 
 });
+
+
+myDecider.on('poll', function(d) {
+    //console.log(_this.config.identity + ": polling for decision tasks...");
+    console.log("polling for tasks...", d);
+});
+
+myDecider.poll();
 
 // on SIGINT event, close the poller properly
 process.on('SIGINT', function () {

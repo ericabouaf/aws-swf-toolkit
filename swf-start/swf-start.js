@@ -2,25 +2,20 @@
 
 var colors = require('colors'),
     path = require('path'),
-    optimist = require('optimist');
+    optimist = require('optimist'),
+    swf = require('aws-swf');
 
-var config, configFilePath = path.join(__dirname, '..', 'config.js');
-try {
-    config = require(configFilePath);
-} catch (ex) {
-    config = {};
-}
 
 var argv = optimist
     .usage('Start a workflow execution on AWS SWF.\nUsage: swf-start workflow-name [input data]')
     .options('d', {
         'alias' : 'domain',
-        'default' : config.domain || 'aws-swf-test-domain',
+        'default' : 'aws-swf-test-domain',
         'describe': 'SWF domain'
     })
     .options('t', {
         'alias' : 'tasklist',
-        'default' : config.tasklist || 'aws-swf-tasklist',
+        'default' : 'aws-swf-tasklist',
         'describe': 'tasklist'
     })
     .options('v', {
@@ -51,14 +46,6 @@ var argv = optimist
         'alias' : 'help',
         'describe': 'show this help'
     })
-    .options('accessKeyId', {
-        'default': config.accessKeyId,
-        'describe': 'AWS accessKeyId'
-    })
-    .options('secretAccessKey', {
-        'default': config.secretAccessKey,
-        'describe': 'AWS secretAccessKey'
-    })
     .argv;
 
 if (argv.help) {
@@ -67,25 +54,14 @@ if (argv.help) {
 }
 
 
-// Check presence of accessKeyId and secretAccessKey
-if (!argv.accessKeyId || !argv.secretAccessKey) {
-    console.error(("accessKeyId or secretAccessKey not configured !\nSet the --accessKeyId and --secretAccessKey parameters or call 'swf-set-credentials'.").red);
-    process.exit(1);
-}
-
 if (argv._.length === 0) {
     console.error("Error: Missing workflow name !".red);
     optimist.showHelp();
     process.exit(1);
 }
 
-var swf = require('../index');
-var swfClient = swf.createClient({
-    accessKeyId: argv.accessKeyId,
-    secretAccessKey: argv.secretAccessKey
-});
 
-var workflow = new swf.Workflow(swfClient, {
+var workflow = new swf.Workflow({
     "domain": argv.d,
     "workflowType": {
         "name": argv._[0],

@@ -14,6 +14,11 @@ function ask(question, callback) {
     });
 }
 
+// TODO: 
+/*function getUserHome() {
+  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+}*/
+
 var configFilePath = path.join(__dirname, '..', 'config.js');
 
 console.log("To simplify the use of aws-swf, please enter your credentials below.".blue);

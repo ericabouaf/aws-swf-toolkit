@@ -1,15 +1,17 @@
 # aws-swf-toolkit
 
-A Node.js Framework for workflows on Amazon SWF
+A Node.js Framework for building workflows on Amazon SWF
+
+This toolkit provides a collection of command-line utilities to interact with the Amazon Simple Workflow (SWF) service. They form a framework for writing and running Amazon SWF activities & deciders in Javascript.
+
+## See also
+
+* [aws-swf](https://github.com/neyric/aws-swf): Node.js Library for Amazon SWF
+* [aws-swf-activities](https://github.com/neyric/aws-swf-activities): A collection of Node.js activity workers for Amazon SWF
 
 
+## swf-activity: Running Activity workers
 
-This toolkit provides a collection of [command-line tools](https://github.com/neyric/aws-swf/wiki/Command-Line-Tools) to interact with the Amazon Simple Workflow (SWF) service.
-    
-framework for writing and running Amazon SWF activities & deciders in Javascript
-
-## Activities
-         
 pretty dumb, an activity is just a function call
 EXCEPT: does not have to send a response right away ! ( very long tasks ! )
 
@@ -21,7 +23,7 @@ EXCEPT: does not have to send a response right away ! ( very long tasks ! )
 (TODO: fetch_config_file unecessary complexity)
 
 
-## Workflows
+## swf-deciders: Running the Workflow logic
 
 IMPORTANT: fundamental difference with script: the decider is called many times through the workflow execution. It is STATELESS.
            Instead, we must inspect the event history of the workflow, and make our decisions (simplified using aws-swf decision task API)
@@ -58,11 +60,10 @@ IMPORTANT: fundamental difference with script: the decider is called many times 
 * options for default workflow parameters (workflowOptions.json, if exists) => no need to set them in start_childworkflow
 
 
-* swf-project : start n swf-decider processes and n swf-activity processes from the current folder (default directories: activities/ & workflows/)
+* swf-toolkit : start n swf-decider processes and n swf-activity processes from the current folder (default directories: activities/ & workflows/)
 
 * swf-activity-test: creates a workflow which can execute any activity given a file
 
-* swf-server (TODO: DA swf console !)
 
 
 
@@ -78,13 +79,13 @@ IMPORTANT: fundamental difference with script: the decider is called many times 
 
 ## Installation
 
-For more detailed installation instructions, check the [Installation Wiki Page](https://github.com/neyric/aws-swf/wiki/Installation)
+
+    $ [sudo] npm install -g aws-swf-toolkit
+
 
 ## Overview
 
-![AWS-SWF Overview](/neyric/aws-swf/raw/master/diagram.png "AWS-SWF Overview")
-
-
+![AWS-SWF Overview](/neyric/aws-swf-toolkit/raw/master/diagram.png "AWS-SWF Overview")
 
 
 ## License
