@@ -22,17 +22,13 @@
         "swf-activity": "./swf-activity/swf-activity.js",
         "swf-decider": "./swf-decider/swf-decider.js",
         "swf-register": "./swf-register/swf-register.js",
-        "swf-set-credentials": "./swf-set-credentials/swf-set-credentials.js",
-        "swf-start": "./swf-start/swf-start.js",
-        "swf-graph": "./swf-graph/swf-graph.js",
-        "swf-toolkit": "./swf-toolkit/swf-toolkit.js"
+        "swf-start": "./swf-start/swf-start.js"
     },
     "dependencies": {
-        "aws-swf": "3.0.0",
+        "aws-swf": "4.0.0",
         "optimist": "0.3.4",
         "async": "0.1.22",
-        "colors": "0.6.0-1",
-        "graphviz": "0.0.8"
+        "colors": "0.6.0-1"
     },
     "licenses" : [
         {

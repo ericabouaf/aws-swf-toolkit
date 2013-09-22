@@ -54,7 +54,7 @@ if (argv.help) {
 
 // Check presence of accessKeyId and secretAccessKey
 if (!argv.accessKeyId || !argv.secretAccessKey) {
-    console.error(("accessKeyId or secretAccessKey not configured !\nSet the --accessKeyId and --secretAccessKey parameters or call 'swf-set-credentials'.").red);
+    console.error(("accessKeyId or secretAccessKey not configured !\n").red);
     process.exit(1);
 }
 

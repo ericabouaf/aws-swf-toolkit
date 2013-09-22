@@ -52,7 +52,7 @@ var myDecider = new swf.Decider({
 myDecider.on('decisionTask', function (decisionTask) {
 
     // If we receive an event "ScheduleActivityTaskFailed", we should fail the workflow and display why...
-    var failedEvent = decisionTask.has_schedule_activity_task_failed();
+    var failedEvent = decisionTask.eventList.has_schedule_activity_task_failed();
     if (failedEvent) {
         var failedAttrs = failedEvent.scheduleActivityTaskFailedEventAttributes;
         console.error(("Received a ScheduleActivityTaskFailed: " + failedAttrs.cause + "  " + JSON.stringify(failedAttrs)).red);

@@ -75,7 +75,7 @@ var workflow = new swf.Workflow({
 
     "workflowId": argv.workflowId,
 
-    "tagList": argv.tag ? (Array.isArray(argv.tag) ? argv.tag : [argv.tag]) : undefined
+    "tagList": argv.tag ? (Array.isArray(argv.tag) ? argv.tag : [argv.tag]) : []
 });
 
 function startWorkflowExecution() {

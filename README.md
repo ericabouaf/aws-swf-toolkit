@@ -35,8 +35,6 @@ IMPORTANT: fundamental difference with script: the decider is called many times 
 
 * swf-activity
 * swf-decider
-* swf-graph
-  * DONE adding default results values for the swf-graph into graphOptions.json
 * swf-register
 * swf-start
 
