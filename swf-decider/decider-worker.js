@@ -15,7 +15,7 @@ var decisionTaskConfig = JSON.parse(process.argv[2]);
 var dt = new swf.DecisionTask(decisionTaskConfig);
 
 function workflowFailed(reason, details) {
-    dt.fail_workflow_execution(reason, details, function (err) {
+    dt.response.fail_workflow_execution(reason, details, function (err) {
         if (err) { console.error(err); return; }
         console.log("Workflow marked as failed ! (decider-worker)");
     });
@@ -44,6 +44,8 @@ try {
             FAILED: 2,
             TIMEDOUT: 4,
 
+            // TODO: method to load external js files
+
             // TODO
             // read content of a file from the decider code
             file: function(path) {
@@ -52,14 +54,25 @@ try {
         };
 
         // Expose all methods available on the DecisionTask as methods in the sandbox
-        var dtFactory = function(fctName) {
+        var dtResponseFactory = function(fctName) {
             return function () {
-                return dt[fctName].apply(dt, arguments);
+                return dt.response[fctName].apply(dt.response, arguments);
             };
         };
-        for(var k in dt) {
-            if(typeof dt[k] === "function") {
-                sandbox[k] = dtFactory(k);
+        for(var k in dt.response) {
+            if(typeof dt.response[k] === "function") {
+                sandbox[k] = dtResponseFactory(k);
+            }
+        }
+
+        var dtEventListFactory = function(fctName) {
+            return function () {
+                return dt.eventList[fctName].apply(dt.eventList, arguments);
+            };
+        };
+        for(k in dt.eventList) {
+            if(typeof dt.eventList[k] === "function") {
+                sandbox[k] = dtEventListFactory(k);
             }
         }
         
@@ -79,7 +92,7 @@ try {
                 dt.respondCompleted(dt.decisions);
             } else {
                 console.log("No decision sent and no decisions scheduled !");
-                dt.fail("Don't know what to do...");
+                dt.response.fail("Don't know what to do...");
             }
         }
         
