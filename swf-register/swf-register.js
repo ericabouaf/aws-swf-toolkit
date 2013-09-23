@@ -4,14 +4,9 @@ var colors = require('colors'),
     optimist = require('optimist'),
     path = require('path'),
     fs = require('fs'),
-    async = require('async');
+    async = require('async'),
+    swf = require('aws-swf');
 
-var config, configFilePath = path.join(__dirname, '..', 'config.js');
-try {
-    config = require(configFilePath);
-} catch (ex) {
-    config = {};
-}
 
 var argv = optimist
     .usage('Register a new activity-type, workflow or domain on AWS SWF.\nUsage: swf-register resource-name')
@@ -25,7 +20,7 @@ var argv = optimist
     })
     .options('d', {
         'alias' : 'domain',
-        'default' : config.domain || 'aws-swf-test-domain',
+        'default' : 'aws-swf-test-domain',
         'describe': 'SWF domain of the activity-type or workflow to register'
     })
     .options('v', {
@@ -37,14 +32,6 @@ var argv = optimist
         'alias' : 'help',
         'describe': 'show this help'
     })
-    .options('accessKeyId', {
-        'default': config.accessKeyId,
-        'describe': 'AWS accessKeyId'
-    })
-    .options('secretAccessKey', {
-        'default': config.secretAccessKey,
-        'describe': 'AWS secretAccessKey'
-    })
     .argv;
 
 if (argv.help) {
@@ -52,14 +39,7 @@ if (argv.help) {
     process.exit(0);
 }
 
-// Check presence of accessKeyId and secretAccessKey
-if (!argv.accessKeyId || !argv.secretAccessKey) {
-    console.error(("accessKeyId or secretAccessKey not configured !\n").red);
-    process.exit(1);
-}
-
-var swf = require('../index');
-var swfClient = swf.createClient(config);
+var swfClient = swf.createClient();
 
 
 var registerWorkflows = function (toRegister) {
