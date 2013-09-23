@@ -54,6 +54,7 @@ try {
         };
 
         // Expose all methods available on the DecisionTask as methods in the sandbox
+        // TODO: cleanup :
         var dtResponseFactory = function(fctName) {
             return function () {
                 return dt.response[fctName].apply(dt.response, arguments);
@@ -85,11 +86,21 @@ try {
         }
 
         // Send the decisions back to SWF
-        if (!dt.responseSent) {
-            if (dt.decisions) {
+        if (!dt.response.responseSent) {
+            if (dt.response.decisions) {
                 console.log("sending decisions...");
-                console.log(JSON.stringify(dt.decisions, null, 3));
-                dt.respondCompleted(dt.decisions);
+
+                dt.response.send(function(err, results) {
+
+                    if (err) {
+                        console.error("RespondDecisionTaskCompleted error : ", err, results);
+                    }
+                    else {
+                        console.log(dt.response.decisions.length + " decisions sent !");
+                        console.log(JSON.stringify(dt.response.decisions, null, 3));
+                    }
+
+                });
             } else {
                 console.log("No decision sent and no decisions scheduled !");
                 dt.response.fail("Don't know what to do...");
