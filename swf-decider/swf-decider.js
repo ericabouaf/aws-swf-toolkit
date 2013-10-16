@@ -60,9 +60,6 @@ myDecider.on('decisionTask', function (decisionTask) {
             if (err) { console.log(err, results); return; }
             console.error("Workflow marked as failed !".red);
         });
-        
-        // to continue polling
-        myDecider.poll();
 
         return;
     }
@@ -82,8 +79,6 @@ myDecider.on('decisionTask', function (decisionTask) {
 
     p.on('exit', function (code) {
         console.log(('child process exited with code ' + code));
-        
-        myDecider.poll();
     });
 
 });
@@ -94,7 +89,7 @@ myDecider.on('poll', function(d) {
     console.log("polling for tasks...", d);
 });
 
-myDecider.poll();
+myDecider.start();
 
 // on SIGINT event, close the poller properly
 process.on('SIGINT', function () {

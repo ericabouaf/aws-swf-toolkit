@@ -63,8 +63,6 @@ activityPoller.on('activityTask', function (activityTask) {
 
     p.on('exit', function (code) {
         console.log('child process exited with code ' + code);
-        
-        activityPoller.poll();
     });
 
 });
@@ -74,7 +72,7 @@ activityPoller.on('poll', function(d) {
     console.log("polling for activity tasks...", d);
 });
 
-activityPoller.poll();
+activityPoller.start();
 
 // on SIGINT event, close the poller properly
 process.on('SIGINT', function () {
