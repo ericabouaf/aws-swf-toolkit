@@ -8,6 +8,23 @@
                "type": "VariableDeclarator",
                "id": {
                   "type": "Identifier",
+                  "name": "a"
+               },
+               "init": {
+                  "type": "Literal",
+                  "value": 1
+               }
+            }
+         ],
+         "kind": "var"
+      },
+      {
+         "type": "VariableDeclaration",
+         "declarations": [
+            {
+               "type": "VariableDeclarator",
+               "id": {
+                  "type": "Identifier",
                   "name": "pickImage"
                },
                "init": {

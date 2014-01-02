@@ -55,7 +55,7 @@ var h = {
 
 
 
-var known_callexpressions = ["file", "stop", "schedule"]
+var known_callexpressions = ["file", "stop", "schedule", "scheduled", "completed", "results"];
 
 
 
@@ -92,8 +92,25 @@ function transformActivityCall(fct_call) {
   	};
 
 
+    var scheduled_if = {
+        "type": "IfStatement",
+        "test": {
+            "type": "UnaryExpression",
+            "operator": "!",
+            "argument": h.fct_call("scheduled", [h.literal(uniqueName)])
+        },
+        "consequent": {
+            "type": "BlockStatement",
+            "body": [
+                new_fct_node
+            ]
+        },
+        "alternate": null
+    };
+
+
 	return {
-		new_fct_node: new_fct_node,
+		new_fct_node: scheduled_if,
 		return_node: return_node,
 		completed_if: completed_if
 	};
@@ -104,21 +121,50 @@ function transformActivityCall(fct_call) {
 function transform(tree) {
     
 
+    var parentObj = tree;
+    var statementsAttribute = "body";
 
-	var statements = tree.body;
+
+	var statements = parentObj[statementsAttribute];
+
 
 
 	// Handles a VariableDeclaration :
-	var fct_call = statements[0].declarations[0].init;
+
+    var statement_to_transform_index = 1;
+
+
+    /*
+    // For a variable assignment (1-src)
+    var var_declartion_stmt = statements[statement_to_transform_index];
+	var fct_call = var_declartion_stmt.declarations[0].init;
+    var r = transformActivityCall(fct_call);
+    var_declartion_stmt.declarations[0].init = r.return_node;
+    var other_statements = statements.slice(statement_to_transform_index+1);
+    r.completed_if.consequent.body = [
+        statements[statement_to_transform_index]
+    ].concat(other_statements);
+    var new_statements = statements.slice(0,statement_to_transform_index).concat([
+        r.new_fct_node,
+        r.completed_if
+    ]);
+    */
+
+
+    // Without variable => just an expression statement (2-src)
+    var expr_stmt = statements[statement_to_transform_index];
+    var fct_call = expr_stmt.expression;
+    var r = transformActivityCall(fct_call);
+    r.completed_if.consequent.body = statements.slice(statement_to_transform_index+1);
+    var new_statements = statements.slice(0,statement_to_transform_index).concat([
+        r.new_fct_node,
+        r.completed_if
+    ]);
 
 
 
-	var r = transformActivityCall(fct_call);
 
-	statements[0].declarations[0].init = r.return_node;
-	statements.insert(0, r.new_fct_node);
-	statements.insert(1, r.completed_if);
-
+    parentObj[statementsAttribute] = new_statements;
 
 
     return tree;
@@ -127,8 +173,9 @@ function transform(tree) {
 
 
 
-var code = fs.readFileSync('src_test.js').toString();
+var code = fs.readFileSync('examples/2-src.js').toString();
 var tree = esprima.parse(code, { /*range: true, tokens: true, comment: true*/ });
+console.log(JSON.stringify(tree, null, 3));
 var tree_ret = transform(tree);
 var ret = escodegen.generate(tree_ret, {
     comment: true,
@@ -137,6 +184,6 @@ var ret = escodegen.generate(tree_ret, {
         quotes: "double" // make it easier to export to json
     }
 });
-fs.writeFileSync('out_test.js', ret);
+fs.writeFileSync('examples/2-out.js', ret);
 
 

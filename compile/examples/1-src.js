@@ -1,5 +1,5 @@
 
-
+var a = 1;
 
 var pickImage = localtask({
       
