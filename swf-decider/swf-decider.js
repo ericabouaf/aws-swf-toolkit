@@ -79,6 +79,8 @@ myDecider.on('decisionTask', function (decisionTask) {
 
     p.on('exit', function (code) {
         console.log(('child process exited with code ' + code));
+
+        myDecider.poll();
     });
 
 });
