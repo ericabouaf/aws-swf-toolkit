@@ -70,7 +70,7 @@ IMPORTANT: fundamental difference with script: the decider is called many times 
 
 ## Overview
 
-![AWS-SWF Overview](/neyric/aws-swf-toolkit/raw/master/diagram.png "AWS-SWF Overview")
+![AWS-SWF Overview](https://raw.github.com/neyric/aws-swf-toolkit/master/diagram.png "AWS-SWF Overview")
 
 
 ## License
