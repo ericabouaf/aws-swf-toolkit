@@ -89,9 +89,7 @@ function startWorkflowExecution() {
 
             // Auto-registration of workflows
             // TODO: add this 'auto-registration' feature as an option to the workflow.start method
-
-            var unknowType = 'Unknown type';
-            if (err.__type === 'com.amazonaws.swf.base.model#UnknownResourceFault' &&  err.message.substr(0, unknowType.length) === unknowType) {
+            if(err.code == "UnknownResourceFault") {
 
                 console.log("Workflow not registered ! Registering...");
                 workflow.register(function (err, results) {
