@@ -6,7 +6,8 @@
 var vm = require('vm'),
     fs = require('fs'),
     path = require('path'),
-    swf = require('aws-swf');
+    swf = require('aws-swf'),
+    async = require('async');
 
 // The task is given to this process as a command line argument in JSON format :
 var decisionTaskConfig = JSON.parse(process.argv[2]);
@@ -50,6 +51,29 @@ try {
             // read content of a file from the decider code
             file: function(path) {
                 return fs.readFileSync(path).toString();
+            },
+
+            // Expose the async library
+            async: async,
+
+            // Method to wrap a "schedule" call in a closure, which returns immediatly if it has results
+            // This prevents a lot of the inspection of the event list in the decider code
+            activity: function(scheduleAttributes, swfAttributes) {
+                return function(cb) {
+                    if( dt.eventList.is_activity_scheduled(scheduleAttributes.name) ) {
+                        if( dt.eventList.has_activity_completed(scheduleAttributes.name) ) {
+                            cb(null, dt.eventList.results(scheduleAttributes.name) );
+                        }
+                        else {
+                            console.log("waiting for "+scheduleAttributes.name+" to complete.");
+                            dt.response.wait();
+                        }
+                    }
+                    else {
+                        console.log("scheduling "+scheduleAttributes.name);
+                        dt.response.schedule(scheduleAttributes, swfAttributes);
+                    }
+                };
             }
         };
 

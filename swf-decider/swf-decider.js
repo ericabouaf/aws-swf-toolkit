@@ -67,7 +67,7 @@ myDecider.on('decisionTask', function (decisionTask) {
     console.log("new decisionTask received ! spawning...");
 
     // Spawn child process
-    var p = spawn('node', [ path.join(__dirname, 'decider-worker.js'), JSON.stringify(decisionTask.config)/*, argv.accessKeyId, argv.secretAccessKey, argv.c */]);
+    var p = spawn('node', [ path.join(__dirname, 'decider-worker.js'), JSON.stringify(decisionTask.config) ]);
 
     p.stdout.on('data', function (data) {
         console.log(data.toString().blue);
@@ -87,7 +87,6 @@ myDecider.on('decisionTask', function (decisionTask) {
 
 
 myDecider.on('poll', function(d) {
-    //console.log(_this.config.identity + ": polling for decision tasks...");
     console.log("polling for tasks...", d);
 });
 

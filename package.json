@@ -1,6 +1,6 @@
 {
     "name": "aws-swf-toolkit",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "A Node.js Framework for workflows on Amazon SWF",
     "author": "Eric Abouaf <eric.abouaf@gmail.com>",
     "preferGlobal": "true",
@@ -25,9 +25,9 @@
         "swf-start": "./swf-start/swf-start.js"
     },
     "dependencies": {
-        "aws-swf": "4.0.0",
+        "aws-swf": "4.1.0",
         "optimist": "0.3.4",
-        "async": "0.1.22",
+        "async": "0.9.0",
         "colors": "0.6.0-1"
     },
     "licenses" : [
