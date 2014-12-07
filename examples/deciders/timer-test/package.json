@@ -1,0 +1,5 @@
+{
+   "name" : "timer-test",
+   "private": true,
+   "main" : "./timer-test"
+}

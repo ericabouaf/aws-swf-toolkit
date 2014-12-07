@@ -1,0 +1,5 @@
+{
+   "name" : "async-parallel-test",
+   "private": true,
+   "main" : "./async-parallel-test.js"
+}

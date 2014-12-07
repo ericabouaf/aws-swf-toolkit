@@ -1,0 +1,5 @@
+{
+   "name" : "async-each",
+   "private": true,
+   "main" : "./async-each.js"
+}

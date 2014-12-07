@@ -1,0 +1,5 @@
+{
+   "name" : "sleep",
+   "private": true,
+   "main" : "./sleep.js"
+}
