@@ -1,7 +1,28 @@
 
+
+
+activity({
+	name: 'step1',
+	activity: 'sleep'
+})(function(err, results) {
+
+	timer({
+		name: 'step2',
+		delay: 10
+	}, { timerId: '12345' })(function(err, data) {
+
+		stop({
+			result: 'Everything is good !'
+		});
+
+	});
+
+});
+
+
 // step1 -> timer (step2) -> step3
 
-if( has_workflow_just_started() ) {
+/*if( has_workflow_just_started() ) {
 
 	schedule({
         name: 'step1',
@@ -43,4 +64,4 @@ if( completed('step3') ) {
       result: 'Everything is good !'
    });
 }
-
+*/

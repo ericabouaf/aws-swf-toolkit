@@ -51,7 +51,7 @@ var activityPoller = new swf.ActivityPoller({
 activityPoller.on('activityTask', function (activityTask) {
 
     // Spawn child process
-    var p = spawn('node', [ path.join(__dirname, 'activity-worker.js'), JSON.stringify(activityTask.config) /*, argv.accessKeyId, argv.secretAccessKey, argv.c, argv.fetchConfigData*/]);
+    var p = spawn('node', [ path.join(__dirname, 'activity-worker.js'), JSON.stringify(activityTask.config) ]);
 
     p.stdout.on('data', function (data) {
         console.log(data.toString().blue);
@@ -79,4 +79,3 @@ process.on('SIGINT', function () {
     console.log('Got SIGINT ! Stopping activity poller after this request...please wait...');
     activityPoller.stop();
 });
-

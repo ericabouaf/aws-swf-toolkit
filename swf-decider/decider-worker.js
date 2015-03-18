@@ -74,7 +74,42 @@ try {
                         dt.response.schedule(scheduleAttributes, swfAttributes);
                     }
                 };
+            },
+
+            timer: function (startAttributes, swfAttributes) {
+                return function (cb) {
+                        if(dt.eventList.timer_scheduled(swfAttributes.timerId)) {
+                            if( dt.eventList.timer_fired(swfAttributes.timerId) ) {
+                                cb(null);
+                            }
+                            else {
+                                console.log("waiting for timer "+swfAttributes.timerId+" to complete");
+                            }
+                        }
+                        else {
+                            console.log("starting timer "+swfAttributes.timerId);
+                            dt.response.start_timer(startAttributes, swfAttributes);
+                        }
+                };
+            },
+
+            childworkflow: function (startAttributes, swfAttributes) {
+                return function (cb) {
+                        if(dt.eventList.childworkflow_scheduled(startAttributes.control)) {
+                            if(childworkflow_completed(control) ) {
+                                cb(null, childworkflow_results(control) );
+                            }
+                            else {
+                                console.log("waiting for childworkflow "+" to complete");
+                            }
+                        }
+                        else {
+                            console.log("starting childworkflow "+startAttributes.control);
+                            dt.response.start_childworkflow(startAttributes, swfAttributes);
+                        }
+                };
             }
+
         };
 
         // Expose all methods available on the DecisionTask as methods in the sandbox
@@ -100,7 +135,7 @@ try {
                 sandbox[k] = dtEventListFactory(k);
             }
         }
-        
+
         // Run the decider code
         try {
             vm.runInNewContext(deciderCode, sandbox, workflowName + '.vm');
@@ -130,7 +165,7 @@ try {
                 dt.response.fail("Don't know what to do...");
             }
         }
-        
+
     });
 
 } catch (ex) {

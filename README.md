@@ -28,7 +28,7 @@ IMPORTANT: fundamental difference with script: the decider is called many times 
 
 * package.json
 * JS description of the workflow
-        
+
 
 ## CLI tools to play with swf from the command line
 
@@ -76,5 +76,3 @@ IMPORTANT: fundamental difference with script: the decider is called many times 
 ## License
 
 [MIT License](https://raw.github.com/neyric/aws-swf/master/LICENSE.txt)
-
-
